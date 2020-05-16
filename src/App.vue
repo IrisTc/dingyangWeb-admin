@@ -8,9 +8,18 @@
   </div>
 </template>
 <style scoped>
+@media screen and (min-width: 1200px) {
+  main {
+    margin: 10px 128px;
+  }
+}
+@media screen and (max-width: 1200px) {
+  main {
+    margin: 10px 64px;
+  }
+}
 main {
   background-color: white;
-  margin: 10px 128px;
 }
 .app {
   font-size: 16px;

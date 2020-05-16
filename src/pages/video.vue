@@ -1,14 +1,17 @@
 <template>
-  <div>
+  <div class="contain">
     <div class="top">
-      <h2>新增视频</h2>
+      <div>
+        <h2>dy.tcualhp.cn</h2>
+        <h2>新增视频</h2>
+      </div>
       <button
         :disabled="(videoFilename && coverFilename) ? null : 'disbaled'"
         @click="post"
       >发布</button>
     </div>
     <div class="new-video">
-      <div class="editor">
+      <div class="editor col-md-7 col-">
         <div class="item title">
           <h3>标题</h3>
           <input
@@ -29,7 +32,7 @@
           </label>
         </div>
       </div>
-      <div class="item video">
+      <div class="item video col-md-5">
         <h3>视频文件</h3>
         <input
           id="video"
@@ -223,7 +226,7 @@ export default {
       this.showTip = true;
       this.tip = "正在编译，请稍等...";
 
-      const url = "/api/video/add";
+      const url = "/api/dingyang/video/add";
       var that = this;
       await axios
         .post(url, JSON.stringify(data), {

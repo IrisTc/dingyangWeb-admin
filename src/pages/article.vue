@@ -1,14 +1,17 @@
 <template>
   <div class="new-article">
     <div class="top">
-      <h2>新增文章</h2>
+      <div>
+        <h2>dy.tcualhp.cn</h2>
+        <h2>新增文章</h2>
+      </div>
       <button
         :disabled="(title && category) ? null : 'disbaled'"
         @click="post"
       >发布</button>
     </div>
     <div class="tips">
-      <div class="editor">
+      <div class="editor col-lg-7 col-md-6 col-sm-12 col-xs-12">
         <div class="category">
           <h3>类别</h3>
           <select v-model="category">
@@ -34,7 +37,7 @@
           />
           </div>
     </div>
-    <div class="cover">
+    <div class="cover col-lg-5 col-md-6 col-sm-12 col-xs-12">
       <h3>封面</h3>
       <div class="image"><img :src="imgUrl"></div>
       <p>已使用默认封面</p>
@@ -115,6 +118,7 @@ export default {
         "https://dingyang-admin-1301593316.cos.ap-guangzhou.myqcloud.com/coverImg/logo.jpg",
       description: "",
       content: "",
+      html:"",
       convalue: "",
       showTip: false,
       tip: "",
@@ -147,6 +151,7 @@ export default {
   },
   methods: {
     saveMd(content) {
+      this.html = content.html;
       this.content = content.value;
     },
 
@@ -154,7 +159,7 @@ export default {
       this.$refs.md.handleSave();
       let data = {
         title: this.title,
-        desc: this.description,
+        description: this.description,
         content: this.content,
         type: this.category,
         coverUrl: this.coverUrl
@@ -163,7 +168,7 @@ export default {
       this.showTip = true;
       this.tip = "正在编译，请稍等...";
       
-      const url = "/api/article/add";
+      const url = "/api/dingyang/article/add";
       var that = this;
       await axios
         .post(url, JSON.stringify(data), {
@@ -197,8 +202,8 @@ export default {
 
     uploadFile() {
       const cos = new Cos({
-        SecretId: "AKID2yVkjaEMJ0b25XqZ3HlynLbbOuhEcyrT",
-        SecretKey: "1mHVUCLMzNUKl2SbLpBk3wZpojES9Zrj"
+        SecretId: "**********************",
+        SecretKey: "**************************"
       });
 
       let filename = Date.now() + ".jpg";
@@ -211,7 +216,7 @@ export default {
         });
         cos.putObject(
           {
-            Bucket: "dingyang-admin-1301593316" /* 必须 */,
+            Bucket: "******************" /* 必须 */,
             Region: "ap-guangzhou" /* 必须 */,
             Key: "coverImg/" + filename /* 必须 */,
             StorageClass: "STANDARD",
