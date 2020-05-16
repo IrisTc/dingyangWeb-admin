@@ -66,6 +66,11 @@
       }
       .c-btn {
         width: 200px;
+        background-color: #fffaf2;
+        border: 2px solid #e8993f33;
+        &:focus-within {
+          border: 2px solid #e89a3f;
+        }
       }
     }
     .editor {

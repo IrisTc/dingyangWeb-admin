@@ -41,12 +41,13 @@
       <h3>封面</h3>
       <div class="image"><img :src="imgUrl"></div>
       <p>已使用默认封面</p>
-      <!-- <button class="c-btn" @click="crop">更换封面</button> -->
-      <input
+      <button class="c-btn" @click="changeCover">更换封面</button>
+      <input style="display:none"
         id="cover"
         type="file"
         accept="image/*"
         @change="changeFile"
+        ref="changeFile"
       >
     </div>
   </div>
@@ -114,11 +115,11 @@ export default {
       title: "",
       category: "",
       coverUrl: "logo.jpg",
-      imgUrl:
-        "https://dingyang-admin-1301593316.cos.ap-guangzhou.myqcloud.com/coverImg/logo.jpg",
+      imgUrl: 'http://localhost:8081/uploads/1589629346870.jpg',
+      file: "",
       description: "",
       content: "",
-      html:"",
+      html: "",
       convalue: "",
       showTip: false,
       tip: "",
@@ -155,6 +156,49 @@ export default {
       this.content = content.value;
     },
 
+    changeCover() {
+      this.$refs.changeFile.dispatchEvent(new MouseEvent('click')) 
+    },
+
+    async changeFile(e) {
+      const files = e.target.files;
+      if (!files) {
+        return;
+      }
+      const file = files[0];
+      var render = new FileReader();
+      render.readAsDataURL(file);
+      render.onload = () => {
+        this.option.img = render.result;
+      };
+      this.cropper = true;
+    },
+
+    uploadFile() {
+      let filename = Date.now() + ".jpg";
+      this.coverUrl = filename;
+      var that = this;
+      this.$refs.cropper.getCropBlob(data => {
+        let file = new window.File([data], filename, {
+          type: data.type
+        });
+        let formData = new FormData();
+        formData.append("file", file, file.name);
+        const fileUrl = "http://localhost:3004/upload";
+        axios
+          .post(fileUrl, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+          })
+          .then(res => {
+            console.log(res)
+            console.log(this.coverUrl)
+            this.cropper = false
+            this.imgUrl = 'http://localhost:8081/uploads/' + this.coverUrl
+            console.log(this.imgUrl)
+          });
+      });
+    },
+
     async post() {
       this.$refs.md.handleSave();
       let data = {
@@ -167,7 +211,7 @@ export default {
 
       this.showTip = true;
       this.tip = "正在编译，请稍等...";
-      
+
       const url = "/api/dingyang/article/add";
       var that = this;
       await axios
@@ -186,50 +230,36 @@ export default {
         });
     },
 
-    async changeFile(e) {
-      const files = e.target.files;
-      if (!files) {
-        return;
-      }
-      const file = files[0];
-      var render = new FileReader();
-      render.readAsDataURL(file);
-      render.onload = () => {
-        this.option.img = render.result;
-      };
-      this.cropper = true;
-    },
+    
 
-    uploadFile() {
-      const cos = new Cos({
-        SecretId: "**********************",
-        SecretKey: "**************************"
-      });
+      //   const cos = new Cos({
+      //     SecretId: "**********************",
+      //     SecretKey: "**************************"
+      //   });
 
-      let filename = Date.now() + ".jpg";
-      this.coverUrl = filename;
+      //   let filename = Date.now() + ".jpg";
+      //   this.coverUrl = filename;
 
-      var that = this;
-      this.$refs.cropper.getCropBlob(data => {
-        let file = new window.File([data], filename, {
-          type: data.type
-        });
-        cos.putObject(
-          {
-            Bucket: "******************" /* 必须 */,
-            Region: "ap-guangzhou" /* 必须 */,
-            Key: "coverImg/" + filename /* 必须 */,
-            StorageClass: "STANDARD",
-            Body: file // 上传文件对象
-          },
-          function(err, data) {
-            that.imgUrl = "https://" + data.Location;
-            that.cropper = false;
-            alert("图片上传成功");
-          }
-        );
-      });
-    }
+      //   var that = this;
+      //   this.$refs.cropper.getCropBlob(data => {
+      //     let file = new window.File([data], filename, {
+      //       type: data.type
+      //     });
+      //     cos.putObject(
+      //       {
+      //         Bucket: "******************" /* 必须 */,
+      //         Region: "ap-guangzhou" /* 必须 */,
+      //         Key: "coverImg/" + filename /* 必须 */,
+      //         StorageClass: "STANDARD",
+      //         Body: file // 上传文件对象
+      //       },
+      //       function(err, data) {
+      //         that.imgUrl = "https://" + data.Location;
+      //         that.cropper = false;
+      //         alert("图片上传成功");
+      //       }
+      //     );
+      //   });
   }
 };
 </script> 
