@@ -34,8 +34,12 @@
       </div>
       <div class="item video col-md-5">
         <h3>视频文件</h3>
-        <button class="c-btn" @click="changeVideo">更换封面</button>
-        <input style="display:none"
+        <button
+          class="c-btn"
+          @click="changeVideo"
+        >更换封面</button>
+        <input
+          style="display:none"
           id="video"
           type="file"
           accept="video/*"
@@ -108,7 +112,6 @@ export default {
   data() {
     return {
       coverFilename: "add.png",
-      coverUrl: "/uploads/covers/add.png",
       cropper: false,
       videoFilename: "",
       videoUrl: "",
@@ -140,6 +143,11 @@ export default {
         limitMinSize: [100, 120]
       }
     };
+  },
+  computed: {
+    coverUrl() {
+      return this.host + "/uploads/covers/" + this.coverFilename;
+    }
   },
   methods: {
     changeCover(e) {
@@ -174,17 +182,16 @@ export default {
           .then(res => {
             console.log("upload success");
             this.cropper = false;
-            this.coverUrl = "/uploads/covers/" + filename;
           });
 
         //腾讯云cos对象存储
         // const cos = new Cos({
-        //   SecretId: "AKID2yVkjaEMJ0b25XqZ3HlynLbbOuhEcyrT",
-        //   SecretKey: "1mHVUCLMzNUKl2SbLpBk3wZpojES9Zrj"
+        //   SecretId: "******************",
+        //   SecretKey: "*******************"
         // });
         // cos.putObject(
         //   {
-        //     Bucket: "dingyang-admin-1301593316" /* 必须 */,
+        //     Bucket: "**********" /* 必须 */,
         //     Region: "ap-guangzhou" /* 必须 */,
         //     Key: "coverImg/" + filename /* 必须 */,
         //     StorageClass: "STANDARD",
@@ -200,7 +207,7 @@ export default {
     },
 
     changeVideo() {
-      this.$refs.changeFile.dispatchEvent(new MouseEvent('click')) 
+      this.$refs.changeFile.dispatchEvent(new MouseEvent("click"));
     },
 
     changeFile(e) {

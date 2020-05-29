@@ -31,7 +31,7 @@ npm run deploy
 
 ## 后端接口URL
 
-本地进行项目开发时，进入server中开启node服务，端口号为3004，默认URL为`http://localhost:3004`，部署上线后就需要将这个url换成真正的域名，统一定义在`src/config.js`文件中
+本地进行项目开发时，进入server中开启node服务，端口号为3004，默认URL为`http://localhost:3004`，部署上线后可以将这个url换成真正的域名，在`src/config.js`文件中修改
 
 ```
 cd server

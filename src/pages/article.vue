@@ -115,7 +115,6 @@ export default {
       title: "",
       category: "",
       coverName: "base.jpg",
-      imgUrl: '/uploads/covers/base.jpg',
       file: "",
       description: "",
       content: "",
@@ -149,6 +148,14 @@ export default {
         limitMinSize: [100, 120]
       }
     };
+  },
+  computed:{
+    imgUrl(){
+      return this.host + '/uploads/covers/' + this.coverName
+    }
+  },
+  mounted(){
+    console.log(this.imgUrl)
   },
   methods: {
     saveMd(content) {
@@ -192,7 +199,6 @@ export default {
           .then(res => {
             console.log('upload success')
             this.cropper = false
-            this.imgUrl = '/uploads/covers/' + filename
           });
       });
     },
