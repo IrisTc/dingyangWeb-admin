@@ -34,11 +34,13 @@
       </div>
       <div class="item video col-md-5">
         <h3>视频文件</h3>
-        <input
+        <button class="c-btn" @click="changeVideo">更换封面</button>
+        <input style="display:none"
           id="video"
           type="file"
           accept="video/*"
-          @change="changeVideo"
+          @change="changeFile"
+          ref="changeFile"
         >
         <label for="video">
           <video
@@ -105,9 +107,8 @@ export default {
   },
   data() {
     return {
-      coverFilename: "",
-      coverUrl:
-        "https://dingyang-admin-1301593316.cos.ap-guangzhou.myqcloud.com/coverImg/add.png",
+      coverFilename: "add.png",
+      coverUrl: "/uploads/covers/add.png",
       cropper: false,
       videoFilename: "",
       videoUrl: "",
@@ -156,37 +157,53 @@ export default {
     },
 
     cropperCover() {
-      let filename = Date.now() + ".jpg";
+      var filename = Date.now() + ".jpg";
       this.coverFilename = filename;
-
       var that = this;
       this.$refs.cropper.getCropBlob(data => {
         var file = new window.File([data], filename, {
           type: data.type
         });
+        let formData = new FormData();
+        formData.append("file", file, file.name);
+        const fileUrl = this.host + "/api/cover/upload";
+        axios
+          .post(fileUrl, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+          })
+          .then(res => {
+            console.log("upload success");
+            this.cropper = false;
+            this.coverUrl = "/uploads/covers/" + filename;
+          });
 
-        const cos = new Cos({
-          SecretId: "AKID2yVkjaEMJ0b25XqZ3HlynLbbOuhEcyrT",
-          SecretKey: "1mHVUCLMzNUKl2SbLpBk3wZpojES9Zrj"
-        });
-        cos.putObject(
-          {
-            Bucket: "dingyang-admin-1301593316" /* 必须 */,
-            Region: "ap-guangzhou" /* 必须 */,
-            Key: "coverImg/" + filename /* 必须 */,
-            StorageClass: "STANDARD",
-            Body: file // 上传文件对象
-          },
-          function(err, data) {
-            that.coverUrl = "https://" + data.Location;
-            that.cropper = false;
-            alert("图片上传成功");
-          }
-        );
+        //腾讯云cos对象存储
+        // const cos = new Cos({
+        //   SecretId: "AKID2yVkjaEMJ0b25XqZ3HlynLbbOuhEcyrT",
+        //   SecretKey: "1mHVUCLMzNUKl2SbLpBk3wZpojES9Zrj"
+        // });
+        // cos.putObject(
+        //   {
+        //     Bucket: "dingyang-admin-1301593316" /* 必须 */,
+        //     Region: "ap-guangzhou" /* 必须 */,
+        //     Key: "coverImg/" + filename /* 必须 */,
+        //     StorageClass: "STANDARD",
+        //     Body: file // 上传文件对象
+        //   },
+        //   function(err, data) {
+        //     that.coverUrl = "https://" + data.Location;
+        //     that.cropper = false;
+        //     alert("图片上传成功");
+        //   }
+        // );
       });
     },
 
-    changeVideo(e) {
+    changeVideo() {
+      this.$refs.changeFile.dispatchEvent(new MouseEvent('click')) 
+    },
+
+    changeFile(e) {
       const files = e.target.files;
       if (!files) {
         return;
@@ -194,26 +211,37 @@ export default {
       var file = files[0];
       var filename = Date.now() + ".mp4";
       this.videoFilename = filename;
-
-      const cos = new Cos({
-        SecretId: "AKID2yVkjaEMJ0b25XqZ3HlynLbbOuhEcyrT",
-        SecretKey: "1mHVUCLMzNUKl2SbLpBk3wZpojES9Zrj"
-      });
-
-      var that = this;
-      cos.putObject(
-        {
-          Bucket: "dingyang-admin-1301593316" /* 必须 */,
-          Region: "ap-guangzhou" /* 必须 */,
-          Key: "videos/" + filename /* 必须 */,
-          StorageClass: "STANDARD",
-          Body: file // 上传文件对象
-        },
-        function(err, data) {
-          that.videoUrl = "https://" + data.Location;
+      let formData = new FormData();
+      formData.append("file", file, filename);
+      const postUrl = this.host + "/api/video/upload";
+      axios
+        .post(postUrl, formData, {
+          headers: { "Content-Type": "multipart/form-data" }
+        })
+        .then(res => {
+          console.log("upload success");
+          this.videoUrl = "/uploads/videos/" + filename;
           alert("视频上传成功");
-        }
-      );
+        });
+
+      // const cos = new Cos({
+      //   SecretId: "AKID2yVkjaEMJ0b25XqZ3HlynLbbOuhEcyrT",
+      //   SecretKey: "1mHVUCLMzNUKl2SbLpBk3wZpojES9Zrj"
+      // });
+      // var that = this;
+      // cos.putObject(
+      //   {
+      //     Bucket: "dingyang-admin-1301593316" /* 必须 */,
+      //     Region: "ap-guangzhou" /* 必须 */,
+      //     Key: "videos/" + filename /* 必须 */,
+      //     StorageClass: "STANDARD",
+      //     Body: file // 上传文件对象
+      //   },
+      //   function(err, data) {
+      //     that.videoUrl = "https://" + data.Location;
+      //     alert("视频上传成功");
+      //   }
+      // );
     },
 
     async post() {
@@ -226,7 +254,7 @@ export default {
       this.showTip = true;
       this.tip = "正在编译，请稍等...";
 
-      const url = "/api/dingyang/video/add";
+      const url = this.host + "/api/dingyang/video/add";
       var that = this;
       await axios
         .post(url, JSON.stringify(data), {

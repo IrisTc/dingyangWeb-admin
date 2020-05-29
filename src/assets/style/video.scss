@@ -97,6 +97,15 @@
         height: 240px;
         max-height: 240px;
       }
+      .c-btn {
+        width: 180px;
+        margin-left: 20px;
+        background-color: #fffaf2;
+        border: 2px solid #e8993f33;
+        &:focus-within {
+          border: 2px solid #e89a3f;
+        }
+      }
     }
   }
   .show-crop {

@@ -89,7 +89,7 @@ export default {
       this.showTip = true;
       this.tip = "正在上传，请稍等...";
       
-      const url = "/api/huayin/other/add";
+      const url = this.host + "/api/huayin/other/add";
       var that = this;
       await axios
         .post(url, JSON.stringify(data), {

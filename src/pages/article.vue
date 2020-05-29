@@ -114,8 +114,8 @@ export default {
     return {
       title: "",
       category: "",
-      coverUrl: "logo.jpg",
-      imgUrl: 'http://localhost:8081/uploads/1589629346870.jpg',
+      coverName: "base.jpg",
+      imgUrl: '/uploads/covers/base.jpg',
       file: "",
       description: "",
       content: "",
@@ -175,8 +175,8 @@ export default {
     },
 
     uploadFile() {
-      let filename = Date.now() + ".jpg";
-      this.coverUrl = filename;
+      var filename = Date.now() + ".jpg";
+      this.coverName = filename;
       var that = this;
       this.$refs.cropper.getCropBlob(data => {
         let file = new window.File([data], filename, {
@@ -184,17 +184,15 @@ export default {
         });
         let formData = new FormData();
         formData.append("file", file, file.name);
-        const fileUrl = "http://localhost:3004/upload";
+        const postUrl = this.host + "/api/cover/upload";
         axios
-          .post(fileUrl, formData, {
+          .post(postUrl, formData, {
             headers: { "Content-Type": "multipart/form-data" }
           })
           .then(res => {
-            console.log(res)
-            console.log(this.coverUrl)
+            console.log('upload success')
             this.cropper = false
-            this.imgUrl = 'http://localhost:8081/uploads/' + this.coverUrl
-            console.log(this.imgUrl)
+            this.imgUrl = '/uploads/covers/' + filename
           });
       });
     },
@@ -206,13 +204,13 @@ export default {
         description: this.description,
         content: this.content,
         type: this.category,
-        coverUrl: this.coverUrl
+        coverUrl: this.coverName
       };
 
       this.showTip = true;
       this.tip = "正在编译，请稍等...";
 
-      const url = "/api/dingyang/article/add";
+      const url = this.host + "/api/dingyang/article/add";
       var that = this;
       await axios
         .post(url, JSON.stringify(data), {

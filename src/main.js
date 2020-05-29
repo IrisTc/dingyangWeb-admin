@@ -9,27 +9,29 @@ import '../static/reset.css'
 import '../static/jquery.min.js'
 import '../static/lib/bootstrap/css/bootstrap.min.css'
 import '../static/lib/bootstrap/js/bootstrap.min.js'
+import config from './config.js'
 
 promise.polyfill()
 //全局拦截
-// router.beforeEach((to, from, next) => {
-//   if (to.matched.some(record => record.meta.requireAuth)) {
-//     console.log(getCookie('UserName'))
-//     if (getCookie('UserName') != null) {
-//       next()
-//     } else {
-//       console.log('to login')
-//       next({
-//         path: '/login'
-//       })
-//     }
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requireAuth)) {
+    console.log(getCookie('UserName'))
+    if (getCookie('UserName') != null) {
+      next()
+    } else {
+      console.log('to login')
+      next({
+        path: '/login'
+      })
+    }
+  } else {
+    next()
+  }
+})
 
 
 Vue.config.productionTip = false
+Vue.prototype.host = config.host
 
 /* eslint-disable no-new */
 new Vue({

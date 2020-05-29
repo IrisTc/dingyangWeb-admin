@@ -65,20 +65,18 @@ export default {
     async login() {
       if (this.username.length != 0 && this.userpwd.length != 0) {
        await axios({
-          url: "/api/user/login",
-          // url: "http://127.0.0.1:3004/user/login",
+          url: this.host + "/api/user/login",
           method: 'post',
           data: {
             name: this.username,
             password: this.userpwd
           }
         }).then(res => {
-          console.log(res);
           let result = res.data.status
           if (result != 200) {
             this.isFailed = true;
           } else {
-            console.log("ok");
+            console.log("login success");
             this.$router.push({ path: "/article" });
           }
         });
