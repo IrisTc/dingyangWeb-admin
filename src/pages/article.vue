@@ -149,13 +149,10 @@ export default {
       }
     };
   },
-  computed:{
-    imgUrl(){
-      return this.host + '/uploads/covers/' + this.coverName
+  computed: {
+    imgUrl() {
+      return this.host + "/uploads/covers/" + this.coverName;
     }
-  },
-  mounted(){
-    console.log(this.imgUrl)
   },
   methods: {
     saveMd(content) {
@@ -164,7 +161,7 @@ export default {
     },
 
     changeCover() {
-      this.$refs.changeFile.dispatchEvent(new MouseEvent('click')) 
+      this.$refs.changeFile.dispatchEvent(new MouseEvent("click"));
     },
 
     async changeFile(e) {
@@ -183,7 +180,6 @@ export default {
 
     uploadFile() {
       var filename = Date.now() + ".jpg";
-      this.coverName = filename;
       var that = this;
       this.$refs.cropper.getCropBlob(data => {
         let file = new window.File([data], filename, {
@@ -197,8 +193,9 @@ export default {
             headers: { "Content-Type": "multipart/form-data" }
           })
           .then(res => {
-            console.log('upload success')
-            this.cropper = false
+            console.log("upload success");
+            this.cropper = false;
+            this.coverName = filename;
           });
       });
     },
@@ -232,38 +229,36 @@ export default {
             that.convalue = "";
           }, 500);
         });
-    },
+    }
 
-    
+    //   const cos = new Cos({
+    //     SecretId: "**********************",
+    //     SecretKey: "**************************"
+    //   });
 
-      //   const cos = new Cos({
-      //     SecretId: "**********************",
-      //     SecretKey: "**************************"
-      //   });
+    //   let filename = Date.now() + ".jpg";
+    //   this.coverUrl = filename;
 
-      //   let filename = Date.now() + ".jpg";
-      //   this.coverUrl = filename;
-
-      //   var that = this;
-      //   this.$refs.cropper.getCropBlob(data => {
-      //     let file = new window.File([data], filename, {
-      //       type: data.type
-      //     });
-      //     cos.putObject(
-      //       {
-      //         Bucket: "******************" /* 必须 */,
-      //         Region: "ap-guangzhou" /* 必须 */,
-      //         Key: "coverImg/" + filename /* 必须 */,
-      //         StorageClass: "STANDARD",
-      //         Body: file // 上传文件对象
-      //       },
-      //       function(err, data) {
-      //         that.imgUrl = "https://" + data.Location;
-      //         that.cropper = false;
-      //         alert("图片上传成功");
-      //       }
-      //     );
-      //   });
+    //   var that = this;
+    //   this.$refs.cropper.getCropBlob(data => {
+    //     let file = new window.File([data], filename, {
+    //       type: data.type
+    //     });
+    //     cos.putObject(
+    //       {
+    //         Bucket: "******************" /* 必须 */,
+    //         Region: "ap-guangzhou" /* 必须 */,
+    //         Key: "coverImg/" + filename /* 必须 */,
+    //         StorageClass: "STANDARD",
+    //         Body: file // 上传文件对象
+    //       },
+    //       function(err, data) {
+    //         that.imgUrl = "https://" + data.Location;
+    //         that.cropper = false;
+    //         alert("图片上传成功");
+    //       }
+    //     );
+    //   });
   }
 };
 </script> 

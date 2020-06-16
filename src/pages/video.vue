@@ -114,7 +114,6 @@ export default {
       coverFilename: "add.png",
       cropper: false,
       videoFilename: "",
-      videoUrl: "",
       title: "",
       showTip: false,
       tip: "",
@@ -147,6 +146,9 @@ export default {
   computed: {
     coverUrl() {
       return this.host + "/uploads/covers/" + this.coverFilename;
+    },
+    videoUrl() {
+      return this.host + "/uploads/videos/" + this.videoFilename;
     }
   },
   methods: {
@@ -165,8 +167,7 @@ export default {
     },
 
     cropperCover() {
-      var filename = Date.now() + ".jpg";
-      this.coverFilename = filename;
+      var filename = Date.now() + ".jpg"; 
       var that = this;
       this.$refs.cropper.getCropBlob(data => {
         var file = new window.File([data], filename, {
@@ -182,6 +183,7 @@ export default {
           .then(res => {
             console.log("upload success");
             this.cropper = false;
+            this.coverFilename = filename;
           });
 
         //腾讯云cos对象存储
@@ -217,7 +219,6 @@ export default {
       }
       var file = files[0];
       var filename = Date.now() + ".mp4";
-      this.videoFilename = filename;
       let formData = new FormData();
       formData.append("file", file, filename);
       const postUrl = this.host + "/api/video/upload";
@@ -227,7 +228,7 @@ export default {
         })
         .then(res => {
           console.log("upload success");
-          this.videoUrl = "/uploads/videos/" + filename;
+          this.videoFilename = filename;
           alert("视频上传成功");
         });
 
